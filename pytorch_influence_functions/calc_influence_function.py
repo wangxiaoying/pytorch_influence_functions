@@ -337,7 +337,7 @@ def calc_influence_single(model, train_loader, test_loader, test_id_num, gpu,
                 # TODO: potential bottle neck, takes 17% execution time
                 # torch.sum(k * j).data.cpu().numpy()
                 ####################
-                torch.sum(k * j).data
+                torch.sum(k * j).data.cpu().numpy()
                 for k, j in zip(grad_z_vec, s_test_vec)
             ]) / train_dataset_size
         influences.append(tmp_influence)
