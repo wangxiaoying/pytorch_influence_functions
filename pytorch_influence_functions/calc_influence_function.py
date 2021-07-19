@@ -440,6 +440,7 @@ def calc_img_wise(config, model, train_loader, test_loader):
                                                 test_start_index)
     else:
         test_dataset_iter_len = len(test_loader.dataset)
+        sample_list = list(range(test_dataset_iter_len))
 
     # Set up logging and save the metadata conf file
     logging.info(f"Running on: {test_sample_num} images per class.")
@@ -449,6 +450,8 @@ def calc_img_wise(config, model, train_loader, test_loader):
                          f"{test_sample_num}.json"
     influences_meta_path = outdir.joinpath(influences_meta_fn)
     save_json(influences_meta, influences_meta_path)
+
+    print("Metadata: ", influences_meta)
 
     influences = {}
     # Main loop for calculating the influence function one test sample per
@@ -476,11 +479,11 @@ def calc_img_wise(config, model, train_loader, test_loader):
         ###########
         influences[str(i)] = {}
         _, label = test_loader.dataset[i]
-        influences[str(i)]['label'] = label
+        influences[str(i)]['label'] = label.cpu().item()
         influences[str(i)]['num_in_dataset'] = j
         influences[str(i)]['time_calc_influence_s'] = end_time - start_time
-        infl = [x.cpu().numpy().tolist() for x in influence]
-        influences[str(i)]['influence'] = infl
+        # infl = [x.cpu().numpy().tolist() for x in influence]
+        influences[str(i)]['influence'] = influence
         influences[str(i)]['harmful'] = harmful[:500]
         influences[str(i)]['helpful'] = helpful[:500]
 
